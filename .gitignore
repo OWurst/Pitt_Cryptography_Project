@@ -1,0 +1,8 @@
+/src/client/node_modules
+/src/client/build
+**/.DS_Store
+*.sqlite
+**/.class
+/src/*/target/*
+/src/resource/storage/*
+**/*.jar 

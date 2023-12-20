@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+"""Get the public key of the resource server."""
+
+import argparse
+import os
+
+parser = argparse.ArgumentParser(description='Get the public key of the resource server.')
+
+parser.add_argument(
+    '-p',
+    '--pub-key-path',
+    type=str,
+    help='Path to the directory where the public key of the resource server is stored.',
+    required=True
+)
+parser.add_argument(
+    '-sp',
+    '--store-path',
+    type=str,
+    help='Path to the directory where the public key of the resource server will be stored.',
+    required=True
+)
+parser.add_argument(
+    '-u',
+    '--username',
+    type=str,
+    help='Your Pitt username to ssh into the resource server.',
+    required=True
+)
+parser.add_argument(
+    '-m',
+    '--machine-name',
+    type=str,
+    help='Name of the machine to ssh into. If not provided then it will default to ritchie.',
+    required=False,
+    default='ritchie'
+)
+
+args = parser.parse_args()
+
+def get_resource_server_pub_key(
+        username: str,
+        machine_name: str,
+        pub_key_path: str,
+        store_path: str
+    ) -> None:
+    """Get the public key of the resource server."""
+    os.system(f'scp {username}@{machine_name}.cs.pitt.edu:{pub_key_path} {store_path}')
+
+get_resource_server_pub_key(
+    username=args.username, 
+    machine_name=args.machine_name, 
+    pub_key_path=args.pub_key_path, 
+    store_path=args.store_path
+)

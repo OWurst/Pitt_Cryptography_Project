@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+"""Create a keypair for the server."""
+import argparse
+import os
+
+parser = argparse.ArgumentParser(description='Generates a key pair for the server.')
+
+parser.add_argument(
+    '-pu', 
+    '--pub-key-path', 
+    type=str,
+    help='''
+        Path to the directory where the public key will be stored.
+        It should be placed in a public directory so it can be obtained 
+        for the out of band exchange.
+        ''',
+    required=True
+)
+parser.add_argument(
+    '-pv',
+    '--priv-key-path',
+    type=str,
+    help='''
+        Path to the directory where the private key will be stored.
+        This should be placed in the same directory as the server jar file.
+
+        If the directory is not provided then the private key will be stored in the same directory that the script is running in.
+        ''',
+    required=False
+)
+parser.add_argument(
+    '-n',
+    '--name',
+    type=str,
+    help='Name of the key pair. It will be used to name the files.',
+    required=True
+)
+
+args = parser.parse_args()
+
+def move_key_file(current_path: str, new_path: str) -> None:
+    """Move the key files to the specified path."""
+    os.system(f"mv {current_path} {new_path}")
+
+
+def generate_keypair(name: str) -> None:
+    """Generate a key pair using openSSL."""
+    os.system(f"openssl genrsa -out {name}.pem 4096")
+    os.system(f"openssl rsa -pubout -in {name}.pem -out {name}.pub")
+
+
+generate_keypair(name=args.name)
+if args.pub_key_path:
+    move_key_file(current_path=f"./{args.name}.pub", new_path=args.pub_key_path)
+if args.priv_key_path:
+    move_key_file(current_path=f"./{args.name}.pem", new_path=args.priv_key_path)
